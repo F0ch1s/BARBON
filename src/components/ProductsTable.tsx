@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { motion } from 'motion/react';
-import { Search, Plus, Trash2 } from 'lucide-react';
+import { Search, Plus, Trash2, Pencil } from 'lucide-react';
 import { $products, $movements, getStock, deleteProduct } from '../stores/inventoryStore';
 import { filterProducts } from '../lib/calculations';
 import ProductModal from './modals/ProductModal';
+import EditProductModal from './modals/EditProductModal';
+import type { Product } from '../types';
 
 export default function ProductsTable() {
   const products = useStore($products);
   const movements = useStore($movements);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const filtered = filterProducts(products, searchTerm);
 
@@ -33,7 +36,7 @@ export default function ProductsTable() {
           />
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsCreateModalOpen(true)}
           className="w-full sm:w-auto bg-[#141414] text-white px-6 py-2 text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
         >
           <Plus size={18} /> Nuevo Producto
@@ -76,12 +79,22 @@ export default function ProductsTable() {
                   </td>
                   <td className="p-4 text-right">${p.cost.toFixed(2)}</td>
                   <td className="p-4 text-center">
-                    <button
-                      onClick={() => deleteProduct(p.id)}
-                      className="text-red-500 hover:text-red-700 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setEditingProduct(p)}
+                        className="text-blue-500 hover:text-blue-700 transition-colors"
+                        title="Editar producto"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                      <button
+                        onClick={() => deleteProduct(p.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors"
+                        title="Eliminar producto"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -97,7 +110,12 @@ export default function ProductsTable() {
         </div>
       </div>
 
-      <ProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ProductModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+      <EditProductModal
+        isOpen={editingProduct !== null}
+        onClose={() => setEditingProduct(null)}
+        product={editingProduct}
+      />
     </motion.div>
   );
 }

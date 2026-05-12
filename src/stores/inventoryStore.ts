@@ -100,6 +100,41 @@ export async function deleteProduct(id: string): Promise<boolean> {
   }
 }
 
+export async function updateProduct(product: Product): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .update({
+        code: product.code,
+        description: product.description,
+        width: product.width,
+        color: product.color,
+        unit: product.unit,
+        cost: product.cost,
+      })
+      .eq('id', product.id)
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') {
+        addNotification('El código de producto ya existe', 'error');
+      } else {
+        addNotification(`Error al actualizar: ${error.message}`, 'error');
+      }
+      return false;
+    }
+
+    const updated = mapDbToProduct(data);
+    $products.set($products.get().map(p => (p.id === updated.id ? updated : p)));
+    addNotification('Producto actualizado correctamente', 'success');
+    return true;
+  } catch (error) {
+    addNotification('Error de conexión al actualizar producto', 'error');
+    return false;
+  }
+}
+
 export async function importProducts(newProducts: Product[]): Promise<number> {
   try {
     const current = $products.get();
