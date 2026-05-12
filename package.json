@@ -1,0 +1,28 @@
+{
+  "name": "kardex-ribbon-pro",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev --port 3000 --host 0.0.0.0",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.7.0",
+    "@astrojs/react": "^4.2.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "@nanostores/react": "^0.8.4",
+    "nanostores": "^0.11.3",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "xlsx": "^0.18.5",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "~5.8.2"
+  }
+}
