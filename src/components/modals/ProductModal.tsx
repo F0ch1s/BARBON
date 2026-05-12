@@ -9,7 +9,7 @@ interface ProductModalProps {
 }
 
 export default function ProductModal({ isOpen, onClose }: ProductModalProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newProduct: Product = {
@@ -22,7 +22,7 @@ export default function ProductModal({ isOpen, onClose }: ProductModalProps) {
       cost: parseFloat(formData.get('cost') as string) || 0,
     };
 
-    if (addProduct(newProduct)) {
+    if (await addProduct(newProduct)) {
       onClose();
     }
   };

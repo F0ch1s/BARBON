@@ -15,7 +15,7 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
 
   const selectedProduct = products.find(p => p.id === selectedProductId);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -29,7 +29,7 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
       notes: formData.get('notes') as string,
     };
 
-    if (addMovement(newMovement)) {
+    if (await addMovement(newMovement)) {
       setSelectedProductId('');
       onClose();
     }

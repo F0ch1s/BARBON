@@ -1,74 +1,147 @@
 import { atom } from 'nanostores';
+import { supabase } from '../lib/supabaseClient';
 import type { Product, Movement, Notification } from '../types';
-
-const STORAGE_KEY_PRODUCTS = 'kardex_products';
-const STORAGE_KEY_MOVEMENTS = 'kardex_movements';
 
 // --- Atoms ---
 export const $products = atom<Product[]>([]);
 export const $movements = atom<Movement[]>([]);
 export const $notifications = atom<Notification[]>([]);
+export const $loading = atom<boolean>(false);
 
-// --- Persistence: Load from localStorage ---
-export function loadFromStorage() {
+// --- Load from Supabase ---
+export async function loadFromDatabase() {
+  $loading.set(true);
   try {
-    const savedProducts = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-    const savedMovements = localStorage.getItem(STORAGE_KEY_MOVEMENTS);
-    if (savedProducts) $products.set(JSON.parse(savedProducts));
-    if (savedMovements) $movements.set(JSON.parse(savedMovements));
-  } catch (e) {
-    console.error('Error loading from localStorage:', e);
+    const [productsRes, movementsRes] = await Promise.all([
+      supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: true }),
+      supabase
+        .from('movements')
+        .select('*')
+        .order('created_at', { ascending: true }),
+    ]);
+
+    if (productsRes.error) throw productsRes.error;
+    if (movementsRes.error) throw movementsRes.error;
+
+    // Map DB snake_case to frontend camelCase
+    const products: Product[] = (productsRes.data || []).map(mapDbToProduct);
+    const movements: Movement[] = (movementsRes.data || []).map(mapDbToMovement);
+
+    $products.set(products);
+    $movements.set(movements);
+  } catch (error) {
+    console.error('Error loading from database:', error);
+    addNotification('Error al cargar datos de la base de datos', 'error');
+  } finally {
+    $loading.set(false);
   }
-}
-
-// --- Persistence: Save to localStorage ---
-function saveProducts(products: Product[]) {
-  localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
-}
-
-function saveMovements(movements: Movement[]) {
-  localStorage.setItem(STORAGE_KEY_MOVEMENTS, JSON.stringify(movements));
 }
 
 // --- Product Actions ---
-export function addProduct(product: Product): boolean {
-  const current = $products.get();
-  if (current.some(p => p.code === product.code)) {
-    addNotification('El código de producto ya existe', 'error');
+export async function addProduct(product: Product): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .insert({
+        code: product.code,
+        description: product.description,
+        width: product.width,
+        color: product.color,
+        unit: product.unit,
+        cost: product.cost,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') {
+        addNotification('El código de producto ya existe', 'error');
+      } else {
+        addNotification(`Error al crear producto: ${error.message}`, 'error');
+      }
+      return false;
+    }
+
+    const newProduct = mapDbToProduct(data);
+    $products.set([...$products.get(), newProduct]);
+    addNotification('Producto añadido correctamente', 'success');
+    return true;
+  } catch (error) {
+    addNotification('Error de conexión al crear producto', 'error');
     return false;
   }
-  const updated = [...current, product];
-  $products.set(updated);
-  saveProducts(updated);
-  addNotification('Producto añadido correctamente', 'success');
-  return true;
 }
 
-export function deleteProduct(id: string): boolean {
-  const movements = $movements.get();
-  if (movements.some(m => m.productId === id)) {
-    addNotification('No se puede eliminar un producto con movimientos registrados', 'error');
+export async function deleteProduct(id: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      if (error.code === '23503') {
+        addNotification('No se puede eliminar un producto con movimientos registrados', 'error');
+      } else {
+        addNotification(`Error al eliminar: ${error.message}`, 'error');
+      }
+      return false;
+    }
+
+    $products.set($products.get().filter(p => p.id !== id));
+    addNotification('Producto eliminado', 'success');
+    return true;
+  } catch (error) {
+    addNotification('Error de conexión al eliminar producto', 'error');
     return false;
   }
-  const updated = $products.get().filter(p => p.id !== id);
-  $products.set(updated);
-  saveProducts(updated);
-  addNotification('Producto eliminado', 'success');
-  return true;
 }
 
-export function importProducts(newProducts: Product[]): number {
-  const current = $products.get();
-  const unique = newProducts.filter(np => !current.some(p => p.code === np.code));
-  const updated = [...current, ...unique];
-  $products.set(updated);
-  saveProducts(updated);
-  addNotification(`Importados ${unique.length} productos nuevos`, 'success');
-  return unique.length;
+export async function importProducts(newProducts: Product[]): Promise<number> {
+  try {
+    const current = $products.get();
+    const unique = newProducts.filter(np => !current.some(p => p.code === np.code));
+
+    if (unique.length === 0) {
+      addNotification('No hay productos nuevos para importar', 'error');
+      return 0;
+    }
+
+    const rows = unique.map(p => ({
+      code: p.code,
+      description: p.description,
+      width: p.width,
+      color: p.color,
+      unit: p.unit,
+      cost: p.cost,
+    }));
+
+    const { data, error } = await supabase
+      .from('products')
+      .insert(rows)
+      .select();
+
+    if (error) {
+      addNotification(`Error al importar: ${error.message}`, 'error');
+      return 0;
+    }
+
+    const imported = (data || []).map(mapDbToProduct);
+    $products.set([...$products.get(), ...imported]);
+    addNotification(`Importados ${imported.length} productos nuevos`, 'success');
+    return imported.length;
+  } catch (error) {
+    addNotification('Error de conexión al importar', 'error');
+    return 0;
+  }
 }
 
 // --- Movement Actions ---
-export function addMovement(movement: Movement): boolean {
+export async function addMovement(movement: Movement): Promise<boolean> {
+  // Validate stock before sending to DB
   if (movement.type === 'OUT') {
     const currentStock = getStock(movement.productId);
     if (currentStock < movement.quantity) {
@@ -76,11 +149,33 @@ export function addMovement(movement: Movement): boolean {
       return false;
     }
   }
-  const updated = [...$movements.get(), movement];
-  $movements.set(updated);
-  saveMovements(updated);
-  addNotification('Movimiento registrado', 'success');
-  return true;
+
+  try {
+    const { data, error } = await supabase
+      .from('movements')
+      .insert({
+        product_id: movement.productId,
+        type: movement.type,
+        quantity: movement.quantity,
+        cost: movement.cost,
+        notes: movement.notes || null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      addNotification(`Error al registrar movimiento: ${error.message}`, 'error');
+      return false;
+    }
+
+    const newMovement = mapDbToMovement(data);
+    $movements.set([...$movements.get(), newMovement]);
+    addNotification('Movimiento registrado', 'success');
+    return true;
+  } catch (error) {
+    addNotification('Error de conexión al registrar movimiento', 'error');
+    return false;
+  }
 }
 
 // --- Stock Calculation ---
@@ -99,4 +194,29 @@ export function addNotification(message: string, type: 'success' | 'error') {
   setTimeout(() => {
     $notifications.set($notifications.get().filter(n => n.id !== id));
   }, 3000);
+}
+
+// --- Mapping Helpers (DB snake_case ↔ Frontend camelCase) ---
+function mapDbToProduct(row: Record<string, unknown>): Product {
+  return {
+    id: row.id as string,
+    code: row.code as string,
+    description: row.description as string,
+    width: row.width as string,
+    color: row.color as string,
+    unit: row.unit as 'Rollos' | 'Metros',
+    cost: Number(row.cost),
+  };
+}
+
+function mapDbToMovement(row: Record<string, unknown>): Movement {
+  return {
+    id: row.id as string,
+    productId: row.product_id as string,
+    date: row.created_at as string,
+    type: row.type as 'IN' | 'OUT',
+    quantity: Number(row.quantity),
+    cost: Number(row.cost),
+    notes: (row.notes as string) || undefined,
+  };
 }

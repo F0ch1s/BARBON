@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@nanostores/react';
 import { AnimatePresence } from 'motion/react';
 import { FileUp, FileDown } from 'lucide-react';
-import { $products, $movements, loadFromStorage, importProducts } from '../stores/inventoryStore';
+import { $products, $movements, loadFromDatabase, importProducts } from '../stores/inventoryStore';
 import { parseExcelFile, exportInventoryToExcel } from '../lib/excelHandlers';
 import type { TabType } from '../types';
 import Sidebar from './Sidebar';
@@ -25,9 +25,9 @@ export default function KardexApp() {
   const movements = useStore($movements);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load persisted data on mount
+  // Load data from Supabase on mount
   useEffect(() => {
-    loadFromStorage();
+    loadFromDatabase();
   }, []);
 
   // Excel import handler
@@ -36,12 +36,12 @@ export default function KardexApp() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       try {
         const bstr = evt.target?.result;
         if (typeof bstr === 'string') {
           const newProducts = parseExcelFile(bstr);
-          importProducts(newProducts);
+          await importProducts(newProducts);
         }
       } catch {
         // Error is handled by parseExcelFile
