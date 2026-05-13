@@ -3,26 +3,40 @@ import { useStore } from '@nanostores/react';
 import { AnimatePresence } from 'motion/react';
 import { FileUp, FileDown } from 'lucide-react';
 import { $products, $movements, loadFromDatabase, importProducts } from '../stores/inventoryStore';
+import { $settings } from '../stores/settingsStore';
 import { parseExcelFile, exportInventoryToExcel } from '../lib/excelHandlers';
+import exportInventoryToPDF from '../lib/pdfExporter';
 import type { TabType } from '../types';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import ProductsTable from './ProductsTable';
 import MovementsTable from './MovementsTable';
 import Reports from './Reports';
+import SettingsPanel from './SettingsPanel';
 import NotificationContainer from './ui/Notification';
 
-const TAB_TITLES: Record<TabType, string> = {
-  dashboard: 'Resumen General',
-  products: 'Catálogo de Cintas',
-  movements: 'Historial de Kardex',
-  reports: 'Análisis de Rotación',
+const TAB_TITLES: Record<'es' | 'en', Record<TabType, string>> = {
+  es: {
+    dashboard: 'Resumen General',
+    products: 'Catálogo de Cintas',
+    movements: 'Historial de Kardex',
+    reports: 'Análisis de Rotación',
+    settings: 'Configuración',
+  },
+  en: {
+    dashboard: 'General Overview',
+    products: 'Tape Catalog',
+    movements: 'Kardex History',
+    reports: 'Rotation Analysis',
+    settings: 'Settings',
+  },
 };
 
 export default function KardexApp() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const products = useStore($products);
   const movements = useStore($movements);
+  const settings = useStore($settings);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load data from Supabase on mount
@@ -62,9 +76,9 @@ export default function KardexApp() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold font-serif italic mb-1">
-              {TAB_TITLES[activeTab]}
+              {TAB_TITLES[settings.language][activeTab]}
             </h1>
-            <p className="text-[#141414] opacity-60 text-sm">Distribuidora Mayorista de Cintas</p>
+            <p className="text-[#141414] opacity-60 text-sm">{settings.companyName}</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -83,10 +97,11 @@ export default function KardexApp() {
             />
 
             <button
-              onClick={() => exportInventoryToExcel(products, movements)}
+              onClick={() => (settings.defaultReportFormat === 'pdf' ? exportInventoryToPDF(products, movements) : exportInventoryToExcel(products, movements))}
               className="flex items-center gap-2 bg-white border border-[#141414] px-4 py-2 text-sm font-medium hover:bg-[#141414] hover:text-white transition-colors"
             >
-              <FileDown size={16} /> <span className="hidden sm:inline">Exportar</span>
+              <FileDown size={16} />
+              <span className="hidden sm:inline">Exportar {settings.defaultReportFormat.toUpperCase()}</span>
             </button>
           </div>
         </header>
@@ -98,6 +113,7 @@ export default function KardexApp() {
             {activeTab === 'products' && <ProductsTable />}
             {activeTab === 'movements' && <MovementsTable />}
             {activeTab === 'reports' && <Reports />}
+            {activeTab === 'settings' && <SettingsPanel />}
           </AnimatePresence>
         </div>
       </main>

@@ -3,11 +3,13 @@ import { useStore } from '@nanostores/react';
 import { motion } from 'motion/react';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { $products, $movements } from '../stores/inventoryStore';
+import { $settings, formatMoney } from '../stores/settingsStore';
 import MovementModal from './modals/MovementModal';
 
 export default function MovementsTable() {
   const products = useStore($products);
   const movements = useStore($movements);
+  const settings = useStore($settings);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const sortedMovements = [...movements].sort(
@@ -35,27 +37,27 @@ export default function MovementsTable() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#141414] text-white text-xs uppercase font-mono">
-                <th className="p-4 border-r border-white/20">Fecha</th>
-                <th className="p-4 border-r border-white/20">Producto</th>
-                <th className="p-4 border-r border-white/20">Tipo</th>
-                <th className="p-4 border-r border-white/20 text-right">Cantidad</th>
-                <th className="p-4 border-r border-white/20 text-right">Costo unit.</th>
-                <th className="p-4">Notas</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} border-r border-white/20`}>Fecha</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} border-r border-white/20`}>Producto</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} border-r border-white/20`}>Tipo</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} border-r border-white/20 text-right`}>Cantidad</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} border-r border-white/20 text-right`}>Costo unit.</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Notas</th>
               </tr>
             </thead>
-            <tbody className="text-sm font-mono">
+            <tbody className={`font-mono ${settings.compactTables ? 'text-xs' : 'text-sm'}`}>
               {sortedMovements.map(m => {
                 const prod = products.find(p => p.id === m.productId);
                 return (
                   <tr key={m.id} className="border-b border-[#141414] hover:bg-gray-50 transition-colors">
-                    <td className="p-4 whitespace-nowrap text-xs">
+                    <td className={`${settings.compactTables ? 'p-3' : 'p-4'} whitespace-nowrap text-xs`}>
                       {new Date(m.date).toLocaleString()}
                     </td>
-                    <td className="p-4">
+                    <td className={settings.compactTables ? 'p-3' : 'p-4'}>
                       <div className="font-bold">{prod?.code}</div>
                       <div className="text-xs opacity-60">{prod?.description}</div>
                     </td>
-                    <td className="p-4">
+                    <td className={settings.compactTables ? 'p-3' : 'p-4'}>
                       <span
                         className={`px-2 py-1 flex items-center gap-1 w-fit text-[10px] uppercase font-bold ${
                           m.type === 'IN'
@@ -67,11 +69,11 @@ export default function MovementsTable() {
                         {m.type === 'IN' ? 'Entrada' : 'Salida'}
                       </span>
                     </td>
-                    <td className="p-4 text-right font-bold">
+                    <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right font-bold`}>
                       {m.quantity} {prod?.unit}
                     </td>
-                    <td className="p-4 text-right">${m.cost.toFixed(2)}</td>
-                    <td className="p-4 opacity-70 italic text-xs">{m.notes}</td>
+                    <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>{formatMoney(m.cost, settings.currency)}</td>
+                    <td className={`${settings.compactTables ? 'p-3' : 'p-4'} opacity-70 italic text-xs`}>{m.notes}</td>
                   </tr>
                 );
               })}

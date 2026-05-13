@@ -3,6 +3,7 @@ import { useStore } from '@nanostores/react';
 import { motion } from 'motion/react';
 import { Search, Plus, Trash2, Pencil } from 'lucide-react';
 import { $products, $movements, getStock, deleteProduct } from '../stores/inventoryStore';
+import { $settings, formatMoney } from '../stores/settingsStore';
 import { filterProducts } from '../lib/calculations';
 import ProductModal from './modals/ProductModal';
 import EditProductModal from './modals/EditProductModal';
@@ -11,6 +12,7 @@ import type { Product } from '../types';
 export default function ProductsTable() {
   const products = useStore($products);
   const movements = useStore($movements);
+  const settings = useStore($settings);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -48,22 +50,22 @@ export default function ProductsTable() {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-[#141414] text-white text-xs uppercase font-mono">
-                <th className="p-4">Código</th>
-                <th className="p-4">Descripción</th>
-                <th className="p-4">Ancho</th>
-                <th className="p-4">Color</th>
-                <th className="p-4 text-right">Stock</th>
-                <th className="p-4 text-right">Costo</th>
-                <th className="p-4 text-center">Acciones</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Código</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Descripción</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Ancho</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Color</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>Stock</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>Costo</th>
+                <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-center`}>Acciones</th>
               </tr>
             </thead>
-            <tbody className="text-sm font-mono">
+            <tbody className={`font-mono ${settings.compactTables ? 'text-xs' : 'text-sm'}`}>
               {filtered.map(p => (
                 <tr key={p.id} className="border-b border-[#141414] hover:bg-gray-50 transition-colors">
-                  <td className="p-4 font-bold">{p.code}</td>
-                  <td className="p-4">{p.description}</td>
-                  <td className="p-4">{p.width}</td>
-                  <td className="p-4">
+                  <td className={`font-bold ${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.code}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.description}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.width}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>
                     <div className="flex items-center gap-2">
                       <span
                         className="w-3 h-3 rounded-full border border-gray-200"
@@ -72,13 +74,13 @@ export default function ProductsTable() {
                       {p.color}
                     </div>
                   </td>
-                  <td className="p-4 text-right">
-                    <span className={getStock(p.id) < 5 ? 'text-red-600 font-bold' : ''}>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>
+                    <span className={getStock(p.id) < settings.lowStockThreshold ? 'text-red-600 font-bold' : ''}>
                       {getStock(p.id)} {p.unit}
                     </span>
                   </td>
-                  <td className="p-4 text-right">${p.cost.toFixed(2)}</td>
-                  <td className="p-4 text-center">
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>{formatMoney(p.cost, settings.currency)}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-center`}>
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => setEditingProduct(p)}

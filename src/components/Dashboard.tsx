@@ -3,11 +3,13 @@ import { motion } from 'motion/react';
 import { FileBox, TrendingUp, TrendingDown, History, AlertCircle } from 'lucide-react';
 import { $products, $movements, getStock } from '../stores/inventoryStore';
 import { calculateStats, getCriticalProducts } from '../lib/calculations';
+import { $settings, formatMoney } from '../stores/settingsStore';
 import StatCard from './ui/StatCard';
 
 export default function Dashboard() {
   const products = useStore($products);
   const movements = useStore($movements);
+  const settings = useStore($settings);
   const stats = calculateStats(products, movements);
   const criticalProducts = getCriticalProducts(products, movements).slice(0, 5);
 
@@ -21,7 +23,7 @@ export default function Dashboard() {
     >
       <StatCard
         title="Valor Inventario"
-        value={`$${stats.totalValue.toLocaleString()}`}
+        value={formatMoney(stats.totalValue, settings.currency)}
         subtitle="Basado en costo unitario"
         icon={<FileBox className="text-blue-600" />}
       />

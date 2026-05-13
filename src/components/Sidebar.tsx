@@ -45,7 +45,12 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       </div>
 
       <div className="p-6 border-t border-[#141414]">
-        <NavItem active={false} onClick={() => {}} icon={<Settings size={20} />} label="Configuración" />
+        <NavItem
+          active={activeTab === 'settings'}
+          onClick={() => onTabChange('settings')}
+          icon={<Settings size={20} />}
+          label="Configuración"
+        />
       </div>
     </nav>
   );

@@ -1,6 +1,7 @@
 import { atom } from 'nanostores';
 import { supabase } from '../lib/supabaseClient';
 import type { Product, Movement, Notification } from '../types';
+import { $settings } from './settingsStore';
 
 // --- Atoms ---
 export const $products = atom<Product[]>([]);
@@ -223,6 +224,8 @@ export function getStock(productId: string): number {
 
 // --- Notification Actions ---
 export function addNotification(message: string, type: 'success' | 'error') {
+  if (!$settings.get().notifications) return;
+
   const id = Date.now();
   const current = $notifications.get();
   $notifications.set([...current, { id, message, type }]);

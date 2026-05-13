@@ -30,7 +30,7 @@ export interface InventoryStats {
   leastSold: { name: string; sales: number; code: string } | null;
 }
 
-export type TabType = 'dashboard' | 'products' | 'movements' | 'reports';
+export type TabType = 'dashboard' | 'products' | 'movements' | 'reports' | 'settings';
 
 export interface Notification {
   id: number;
