@@ -68,6 +68,29 @@ export default function ProductModal({ isOpen, onClose }: ProductModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Registrar Nuevo Mueble">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+<<<<<<< HEAD
+=======
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] uppercase font-bold opacity-70">Código de Producto</label>
+            <input
+              name="code"
+              required
+              className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
+              placeholder="Ej: SAT-001"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] uppercase font-bold opacity-70">Color</label>
+            <input
+              name="color"
+              required
+              className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
+              placeholder="Ej: Rojo"
+            />
+          </div>
+        </div>
+>>>>>>> 7747453 (cambio de color)
         <div className="flex flex-col gap-1">
           <label className="text-[10px] uppercase font-bold opacity-70">Nombre del Mueble</label>
           <input
