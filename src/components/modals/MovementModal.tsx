@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import Modal from '../ui/Modal';
 import { $products, addMovement, getStock } from '../../stores/inventoryStore';
@@ -12,8 +12,18 @@ interface MovementModalProps {
 export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
   const products = useStore($products);
   const [selectedProductId, setSelectedProductId] = useState('');
+  const [cost, setCost] = useState('');
 
   const selectedProduct = products.find(p => p.id === selectedProductId);
+
+  // Auto-fill cost when a product is selected
+  useEffect(() => {
+    if (selectedProduct) {
+      setCost(String(selectedProduct.cost));
+    } else {
+      setCost('');
+    }
+  }, [selectedProductId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,18 +35,25 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
       date: new Date().toISOString(),
       type: formData.get('type') as MovementType,
       quantity: parseFloat(formData.get('quantity') as string),
-      cost: parseFloat(formData.get('cost') as string),
+      cost: parseFloat(cost) || 0,
       notes: formData.get('notes') as string,
     };
 
     if (await addMovement(newMovement)) {
       setSelectedProductId('');
+      setCost('');
       onClose();
     }
   };
 
+  const handleClose = () => {
+    setSelectedProductId('');
+    setCost('');
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Registro de Kardex">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Registro de Kardex">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <label className="text-[10px] uppercase font-bold opacity-70">Producto</label>
@@ -69,9 +86,10 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
               name="quantity"
               type="number"
               step="0.01"
+              min="0.01"
               required
               className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
-              placeholder="0"
+              placeholder="Ingrese cantidad"
             />
           </div>
         </div>
@@ -81,9 +99,12 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
             name="cost"
             type="number"
             step="0.01"
+            min="0"
             required
-            defaultValue={selectedProduct?.cost || 0}
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
             className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
+            placeholder="Ingrese costo"
           />
         </div>
         <div className="flex flex-col gap-1">
@@ -104,3 +125,4 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
     </Modal>
   );
 }
+
