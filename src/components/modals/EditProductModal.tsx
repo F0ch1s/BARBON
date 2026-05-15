@@ -79,13 +79,9 @@ export default function EditProductModal({ isOpen, onClose, product }: EditProdu
               defaultValue={product.unit}
               className="border-b-2 border-[#141414] py-2 focus:outline-none bg-white"
             >
-              <option value="Yardas">Yardas</option>
-              <option value="Metros">Metros</option>
-              <option value="Rollos">Rollos</option>
-              <option value="Unidades">Unidades</option>
-              <option value="Piezas">Piezas</option>
               <option value="Cajas">Cajas</option>
-              <option value="Paquetes">Paquetes</option>
+              <option value="Yardas">Yardas</option>
+              <option value="Unidades">Unidades</option>
             </select>
           </div>
         </div>

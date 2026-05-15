@@ -1,4 +1,4 @@
-export type Unit = 'Yardas' | 'Metros' | 'Rollos' | 'Unidades' | 'Piezas' | 'Cajas' | 'Paquetes';
+export type Unit = 'Cajas' | 'Yardas' | 'Unidades';
 export type MovementType = 'IN' | 'OUT';
 
 export interface Product {

@@ -20,7 +20,7 @@ export function parseExcelFile(binaryString: string): Product[] {
         description: String(item.Descripcion || item.DESCRIPTION || ''),
         width: String(item.Ancho || item.WIDTH || ''),
         color: String(item.Color || item.COLOR || ''),
-        unit: String(item.Unidad || item.UNIT || 'Yardas'),
+        unit: String(item.Unidad || item.UNIT || 'Cajas'),
         cost: parseFloat(String(item.Costo || item.COST)) || 0,
       })
     )

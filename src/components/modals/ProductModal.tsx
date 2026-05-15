@@ -10,43 +10,24 @@ interface ProductModalProps {
 }
 
 /**
- * Genera un código automático basado en la descripción.
- * Toma las primeras 3 letras de la primera palabra significativa,
- * luego busca el siguiente número secuencial disponible.
- * Ejemplo: "Tubo PVC" → TUB-001, TUB-002, etc.
+ * Genera un código automático con prefijo DY (DISTRIBUCIONES DYNO).
+ * Busca el siguiente número secuencial disponible.
+ * Ejemplo: DY-001, DY-002, DY-003, etc.
  */
 function generateCode(description: string, existingProducts: Product[]): string {
   if (!description.trim()) return '';
 
-  // Palabras a ignorar para generar el prefijo
-  const stopWords = ['de', 'del', 'la', 'el', 'en', 'los', 'las', 'un', 'una', 'y', 'para', 'con', 'por'];
+  const prefix = 'DY';
 
-  const words = description
-    .trim()
-    .split(/\s+/)
-    .filter(w => !stopWords.includes(w.toLowerCase()));
-
-  // Tomar las primeras 3 letras de la primera palabra significativa
-  const prefix = (words[0] || description.trim())
-    .replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ]/g, '')
-    .substring(0, 3)
-    .toUpperCase()
-    // Normalizar acentos para el código
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-
-  if (!prefix) return '';
-
-  // Contar productos existentes con el mismo prefijo
-  const existingWithPrefix = existingProducts.filter(p =>
-    p.code.startsWith(prefix + '-')
-  );
-
-  // Encontrar el siguiente número disponible
-  const usedNumbers = existingWithPrefix.map(p => {
-    const num = parseInt(p.code.split('-')[1], 10);
-    return isNaN(num) ? 0 : num;
-  });
+  // Buscar todos los códigos existentes que empiecen con DY-
+  const usedNumbers = existingProducts
+    .filter(p => p.code.startsWith(prefix + '-'))
+    .map(p => {
+      // Extraer la parte numérica después de "DY-"
+      const match = p.code.match(/^DY-(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(n => !isNaN(n));
 
   const nextNum = usedNumbers.length > 0 ? Math.max(...usedNumbers) + 1 : 1;
 
@@ -128,13 +109,9 @@ export default function ProductModal({ isOpen, onClose }: ProductModalProps) {
           <div className="flex flex-col gap-1">
             <label className="text-[10px] uppercase font-bold opacity-70">Unidad de Medida</label>
             <select name="unit" className="border-b-2 border-[#141414] py-2 focus:outline-none bg-white">
-              <option value="Yardas">Yardas</option>
-              <option value="Metros">Metros</option>
-              <option value="Rollos">Rollos</option>
-              <option value="Unidades">Unidades</option>
-              <option value="Piezas">Piezas</option>
               <option value="Cajas">Cajas</option>
-              <option value="Paquetes">Paquetes</option>
+              <option value="Yardas">Yardas</option>
+              <option value="Unidades">Unidades</option>
             </select>
           </div>
         </div>
