@@ -12,7 +12,7 @@ export type AppSettings = {
 };
 
 export const defaultSettings: AppSettings = {
-  companyName: 'Distribuidora Mayorista de Cintas',
+  companyName: 'DISTRIBUCIONES DYNO',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
   lowStockThreshold: 10,

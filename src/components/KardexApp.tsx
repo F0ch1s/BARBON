@@ -18,14 +18,14 @@ import NotificationContainer from './ui/Notification';
 const TAB_TITLES: Record<'es' | 'en', Record<TabType, string>> = {
   es: {
     dashboard: 'Resumen General',
-    products: 'Catálogo de Cintas',
+    products: 'Catálogo de Productos',
     movements: 'Historial de Kardex',
     reports: 'Análisis de Rotación',
     settings: 'Configuración',
   },
   en: {
     dashboard: 'General Overview',
-    products: 'Tape Catalog',
+    products: 'Product Catalog',
     movements: 'Kardex History',
     reports: 'Rotation Analysis',
     settings: 'Settings',

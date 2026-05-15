@@ -242,7 +242,7 @@ function mapDbToProduct(row: Record<string, unknown>): Product {
     description: row.description as string,
     width: row.width as string,
     color: row.color as string,
-    unit: row.unit as 'Rollos' | 'Metros',
+    unit: (row.unit as string) || 'Yardas',
     cost: Number(row.cost),
   };
 }
