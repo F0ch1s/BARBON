@@ -11,7 +11,7 @@ export default function Dashboard() {
   const movements = useStore($movements);
   const settings = useStore($settings);
   const stats = calculateStats(products, movements);
-  const criticalProducts = getCriticalProducts(products, movements).slice(0, 5);
+  const criticalProducts = getCriticalProducts(products, movements, settings.lowStockThreshold).slice(0, 5);
 
   return (
     <motion.div

@@ -14,6 +14,7 @@ import MovementsTable from './MovementsTable';
 import Reports from './Reports';
 import SettingsPanel from './SettingsPanel';
 import NotificationContainer from './ui/Notification';
+import ChatBot from './ChatBot';
 
 const TAB_TITLES: Record<'es' | 'en', Record<TabType, string>> = {
   es: {
@@ -120,6 +121,9 @@ export default function KardexApp() {
 
       {/* Notifications */}
       <NotificationContainer />
+
+      {/* AI Chatbot */}
+      <ChatBot />
     </div>
   );
 }

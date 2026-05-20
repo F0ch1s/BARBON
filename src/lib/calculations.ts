@@ -58,7 +58,7 @@ export function calculateStats(products: Product[], movements: Movement[]): Inve
 export function getCriticalProducts(
   products: Product[],
   movements: Movement[],
-  threshold: number = 10
+  threshold: number = 3
 ): Product[] {
   return products.filter(p => calculateStock(p.id, movements) < threshold);
 }

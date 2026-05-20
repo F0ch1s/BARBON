@@ -15,7 +15,7 @@ export const defaultSettings: AppSettings = {
   companyName: 'MUEBLERÍA BARBÓN',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
-  lowStockThreshold: 10,
+  lowStockThreshold: 3,
   compactTables: false,
   notifications: true,
   autoSave: true,
