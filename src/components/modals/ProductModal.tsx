@@ -10,7 +10,7 @@ interface ProductModalProps {
 }
 
 /**
- * Genera un código automático con prefijo MB (Muebles Barbón).
+ * Genera un código automático con prefijo MB (Muebles ).
  * Busca el siguiente número secuencial disponible.
  * Ejemplo: MB-001, MB-002, MB-003, etc.
  */

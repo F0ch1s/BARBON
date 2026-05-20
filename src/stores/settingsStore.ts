@@ -12,7 +12,7 @@ export type AppSettings = {
 };
 
 export const defaultSettings: AppSettings = {
-  companyName: 'MUEBLERÍA BARBÓN',
+  companyName: 'MUEBLERÍA PIERO',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
   lowStockThreshold: 3,
