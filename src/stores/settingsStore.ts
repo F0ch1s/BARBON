@@ -12,7 +12,7 @@ export type AppSettings = {
 };
 
 export const defaultSettings: AppSettings = {
-  companyName: 'DISTRIBUCIONES DYNO',
+  companyName: 'MUEBLERÍA BARBÓN',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
   lowStockThreshold: 10,

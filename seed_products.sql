@@ -1,36 +1,49 @@
 -- =============================================
--- DISTRIBUCIONES DYNO - Productos de ejemplo
+-- MUEBLERÍA BARBÓN - Productos de ejemplo
 -- Ejecutar en Supabase SQL Editor
 -- =============================================
 
--- PASO 1: Actualizar la restricción de unidad para permitir nuevos valores
-ALTER TABLE products DROP CONSTRAINT IF EXISTS products_unit_check;
-ALTER TABLE products ADD CONSTRAINT products_unit_check
-  CHECK (unit IN ('Cajas', 'Yardas', 'Unidades'));
-
--- PASO 2: Limpiar productos anteriores (si existen)
+-- PASO 1: Limpiar datos anteriores PRIMERO (antes de cambiar constraints)
 DELETE FROM movements; -- Borrar movimientos primero por la foreign key
 DELETE FROM products;
 
--- PASO 3: Insertar productos del cliente
-INSERT INTO products (code, description, width, color, unit, cost) VALUES
-  -- Cinta Dynox por yardaje
-  ('DY-014', 'Cinta Dynox', '14 yardas', 'Estándar', 'Cajas', 150.00),
-  ('DY-016', 'Cinta Dynox', '16 yardas', 'Estándar', 'Cajas', 70.00),
-  ('DY-018', 'Cinta Dynox', '18 yardas', 'Estándar', 'Cajas', 80.00),
-  ('DY-036', 'Cinta Dynox', '36 yardas', 'Estándar', 'Cajas', 264.00),
-  ('DY-070', 'Cinta Dynox', '70 yardas', 'Estándar', 'Cajas', 220.00),
-  ('DY-080', 'Cinta Dynox', '80 yardas', 'Estándar', 'Cajas', 240.00),
-  ('DY-090', 'Cinta Dynox', '90 yardas', 'Estándar', 'Cajas', 260.00),
-  ('DY-100', 'Cinta Dynox', '100 yardas', 'Estándar', 'Cajas', 300.00),
-  ('DY-320', 'Cinta Dynox', '320 yardas', 'Estándar', 'Cajas', 240.00),
-  ('DY-340', 'Cinta Dynox', '340 yardas', 'Estándar', 'Cajas', 260.00),
+-- PASO 2: Renombrar columnas de width/color a category/material
+ALTER TABLE products RENAME COLUMN width TO category;
+ALTER TABLE products RENAME COLUMN color TO material;
 
-  -- Cinta Dynox 80 yd por color
-  ('DY-080-BLA', 'Cinta Dynox 80 yd', '80 yardas', 'Blanco', 'Cajas', 240.00),
-  ('DY-080-NEG', 'Cinta Dynox 80 yd', '80 yardas', 'Negro', 'Cajas', 240.00),
-  ('DY-080-VER', 'Cinta Dynox 80 yd', '80 yardas', 'Verde', 'Cajas', 240.00),
-  ('DY-080-AMA', 'Cinta Dynox 80 yd', '80 yardas', 'Amarillo', 'Cajas', 240.00),
-  ('DY-080-NAR', 'Cinta Dynox 80 yd', '80 yardas', 'Anaranjado', 'Cajas', 240.00),
-  ('DY-080-AZU', 'Cinta Dynox 80 yd', '80 yardas', 'Azul', 'Cajas', 240.00),
-  ('DY-080-ROJ', 'Cinta Dynox 80 yd', '80 yardas', 'Rojo', 'Cajas', 240.00);
+-- PASO 3: Actualizar la restricción de unidad para los nuevos valores
+ALTER TABLE products DROP CONSTRAINT IF EXISTS products_unit_check;
+ALTER TABLE products ADD CONSTRAINT products_unit_check
+  CHECK (unit IN ('Unidades', 'Juegos', 'Piezas'));
+
+-- PASO 4: Insertar productos de mueblería
+INSERT INTO products (code, description, category, material, unit, cost) VALUES
+  -- Muebles de Dormitorio
+  ('MB-001', 'Cama King Size con cabecera tapizada', 'Dormitorio', 'Madera de pino', 'Unidades', 2800.00),
+  ('MB-002', 'Cama Queen Size clásica', 'Dormitorio', 'MDF enchapado', 'Unidades', 1950.00),
+  ('MB-003', 'Velador 2 cajones', 'Dormitorio', 'Melamina', 'Unidades', 280.00),
+  ('MB-004', 'Cómoda 6 cajones', 'Dormitorio', 'Madera de cedro', 'Unidades', 1200.00),
+  ('MB-005', 'Ropero 4 puertas con espejo', 'Dormitorio', 'MDF', 'Unidades', 2400.00),
+  ('MB-006', 'Tocador con espejo y banco', 'Dormitorio', 'Madera de pino', 'Juegos', 950.00),
+
+  -- Muebles de Oficina
+  ('MB-007', 'Escritorio ejecutivo en L', 'Oficina', 'Melamina', 'Unidades', 1100.00),
+  ('MB-008', 'Silla ergonómica giratoria', 'Oficina', 'Metal y malla', 'Unidades', 650.00),
+  ('MB-009', 'Estante archivador 5 niveles', 'Oficina', 'Metal', 'Unidades', 420.00),
+  ('MB-010', 'Mesa de reuniones 8 personas', 'Oficina', 'MDF enchapado', 'Unidades', 1800.00),
+  ('MB-011', 'Librero modular 4 cuerpos', 'Oficina', 'Melamina', 'Unidades', 780.00),
+
+  -- Muebles de Cocina
+  ('MB-012', 'Repostero alto 3 puertas', 'Cocina', 'Melamina', 'Unidades', 850.00),
+  ('MB-013', 'Repostero bajo con granito', 'Cocina', 'MDF y granito', 'Unidades', 1400.00),
+  ('MB-014', 'Mesa de cocina 4 personas', 'Cocina', 'Madera de pino', 'Unidades', 520.00),
+  ('MB-015', 'Alacena rústica 2 puertas', 'Cocina', 'Madera reciclada', 'Unidades', 680.00),
+
+  -- Muebles de Sala
+  ('MB-016', 'Sofá seccional en L 5 asientos', 'Sala', 'Tela y madera', 'Unidades', 3200.00),
+  ('MB-017', 'Mesa de centro con vidrio', 'Sala', 'Vidrio y metal', 'Unidades', 450.00),
+  ('MB-018', 'Mueble para TV 55 pulgadas', 'Sala', 'Melamina', 'Unidades', 680.00),
+
+  -- Muebles de Comedor
+  ('MB-019', 'Juego de comedor 6 sillas', 'Comedor', 'Madera de cedro', 'Juegos', 2600.00),
+  ('MB-020', 'Vitrina aparador con vidrio', 'Comedor', 'MDF y vidrio', 'Unidades', 1350.00);

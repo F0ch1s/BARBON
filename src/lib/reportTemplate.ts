@@ -39,6 +39,6 @@ export function addReportFooter(doc: jsPDF, pageNumber: number, pageCount: numbe
   doc.setFontSize(8);
   doc.setTextColor(100, 116, 139);
   doc.text(`Página ${pageNumber} de ${pageCount}`, pageWidth - 40, pageHeight - 16, { align: 'right' });
-  doc.text('Reporte generado automáticamente por Kardex Ribbon Pro', 40, pageHeight - 16);
+  doc.text('Reporte generado automáticamente por MueblesKardex', 40, pageHeight - 16);
   doc.setTextColor(0, 0, 0);
 }

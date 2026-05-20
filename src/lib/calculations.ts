@@ -18,7 +18,8 @@ export function filterProducts(products: Product[], searchTerm: string): Product
     p =>
       p.description.toLowerCase().includes(term) ||
       p.code.toLowerCase().includes(term) ||
-      p.color.toLowerCase().includes(term)
+      p.category.toLowerCase().includes(term) ||
+      p.material.toLowerCase().includes(term)
   );
 }
 

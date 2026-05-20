@@ -1,12 +1,12 @@
-export type Unit = 'Cajas' | 'Yardas' | 'Unidades';
+export type Unit = 'Unidades' | 'Juegos' | 'Piezas';
 export type MovementType = 'IN' | 'OUT';
 
 export interface Product {
   id: string;
   code: string;
   description: string;
-  width: string;
-  color: string;
+  category: string;
+  material: string;
   unit: Unit;
   cost: number;
   initialStock?: number;

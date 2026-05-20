@@ -18,9 +18,9 @@ export function parseExcelFile(binaryString: string): Product[] {
         id: crypto.randomUUID(),
         code: String(item.Codigo || item.CODE || ''),
         description: String(item.Descripcion || item.DESCRIPTION || ''),
-        width: String(item.Ancho || item.WIDTH || ''),
-        color: String(item.Color || item.COLOR || ''),
-        unit: String(item.Unidad || item.UNIT || 'Cajas'),
+        category: String(item.Categoria || item.CATEGORY || ''),
+        material: String(item.Material || item.MATERIAL || ''),
+        unit: String(item.Unidad || item.UNIT || 'Unidades'),
         cost: parseFloat(String(item.Costo || item.COST)) || 0,
       })
     )
@@ -42,8 +42,8 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
     return {
       Codigo: p.code,
       Descripcion: p.description,
-      Ancho: p.width,
-      Color: p.color,
+      Categoria: p.category,
+      Material: p.material,
       Unidad: p.unit,
       CostoUnitario: p.cost,
       StockActual: stock,
@@ -137,5 +137,5 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
   XLSX.utils.book_append_sheet(workbook, movementsSheet, 'Movimientos');
   XLSX.utils.book_append_sheet(workbook, rotationSheet, 'Rotacion');
 
-  XLSX.writeFile(workbook, `Reportes_Inventario_${fileDate}.xlsx`);
+  XLSX.writeFile(workbook, `Reportes_Muebleria_${fileDate}.xlsx`);
 }

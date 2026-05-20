@@ -31,7 +31,7 @@ export default function ProductsTable() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 opacity-30" size={18} />
           <input
             type="text"
-            placeholder="Buscar por nombre, código o color..."
+            placeholder="Buscar por nombre, código, categoría o material..."
             className="w-full pl-10 pr-4 py-2 bg-white border border-[#141414] text-sm focus:outline-none focus:ring-1 focus:ring-[#141414]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -41,7 +41,7 @@ export default function ProductsTable() {
           onClick={() => setIsCreateModalOpen(true)}
           className="w-full sm:w-auto bg-[#141414] text-white px-6 py-2 text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
         >
-          <Plus size={18} /> Nuevo Producto
+          <Plus size={18} /> Nuevo Mueble
         </button>
       </div>
 
@@ -52,8 +52,8 @@ export default function ProductsTable() {
               <tr className="bg-[#141414] text-white text-xs uppercase font-mono">
                 <th className={settings.compactTables ? 'p-3' : 'p-4'}>Código</th>
                 <th className={settings.compactTables ? 'p-3' : 'p-4'}>Descripción</th>
-                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Ancho</th>
-                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Color</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Categoría</th>
+                <th className={settings.compactTables ? 'p-3' : 'p-4'}>Material</th>
                 <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>Stock</th>
                 <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>Costo</th>
                 <th className={`${settings.compactTables ? 'p-3' : 'p-4'} text-center`}>Acciones</th>
@@ -64,16 +64,12 @@ export default function ProductsTable() {
                 <tr key={p.id} className="border-b border-[#141414] hover:bg-gray-50 transition-colors">
                   <td className={`font-bold ${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.code}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.description}</td>
-                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.width}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="w-3 h-3 rounded-full border border-gray-200"
-                        style={{ backgroundColor: p.color.toLowerCase() }}
-                      ></span>
-                      {p.color}
-                    </div>
+                    <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs font-semibold">
+                      {p.category}
+                    </span>
                   </td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.material}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>
                     <span className={getStock(p.id) < settings.lowStockThreshold ? 'text-red-600 font-bold' : ''}>
                       {getStock(p.id)} {p.unit}
@@ -103,7 +99,7 @@ export default function ProductsTable() {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={7} className="p-12 text-center opacity-30 italic">
-                    {searchTerm ? 'No se encontraron productos' : 'No hay productos registrados'}
+                    {searchTerm ? 'No se encontraron muebles' : 'No hay muebles registrados'}
                   </td>
                 </tr>
               )}
