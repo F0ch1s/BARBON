@@ -49,8 +49,8 @@ export async function addProduct(product: Product): Promise<boolean> {
       .insert({
         code: product.code,
         description: product.description,
-        category: product.category,
-        material: product.material,
+        category: product.width,
+        material: product.color,
         unit: product.unit,
         cost: product.cost,
       })
@@ -108,8 +108,8 @@ export async function updateProduct(product: Product): Promise<boolean> {
       .update({
         code: product.code,
         description: product.description,
-        category: product.category,
-        material: product.material,
+        category: product.width,
+        material: product.color,
         unit: product.unit,
         cost: product.cost,
       })
@@ -149,8 +149,8 @@ export async function importProducts(newProducts: Product[]): Promise<number> {
     const rows = unique.map(p => ({
       code: p.code,
       description: p.description,
-      category: p.category,
-      material: p.material,
+      category: p.width,
+      material: p.color,
       unit: p.unit,
       cost: p.cost,
     }));
@@ -240,9 +240,9 @@ function mapDbToProduct(row: Record<string, unknown>): Product {
     id: row.id as string,
     code: row.code as string,
     description: row.description as string,
-    category: row.category as string,
-    material: row.material as string,
-    unit: (row.unit as string) || 'Unidades',
+    width: (row.category as string) || '',
+    color: (row.material as string) || '',
+    unit: (row.unit as string) || 'Cajas',
     cost: Number(row.cost),
   };
 }

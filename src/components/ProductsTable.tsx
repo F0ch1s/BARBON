@@ -60,20 +60,26 @@ export default function ProductsTable() {
               </tr>
             </thead>
             <tbody className={`font-mono ${settings.compactTables ? 'text-xs' : 'text-sm'}`}>
-              {filtered.map(p => (
-                <tr key={p.id} className="border-b border-[#141414] hover:bg-gray-50 transition-colors">
-                  <td className={`font-bold ${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.code}</td>
-                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.description}</td>
+              {filtered.map(p => {
+                const stock = getStock(p.id);
+                const isLowStock = stock < settings.lowStockThreshold;
+                return (
+                <tr key={p.id} className={`border-b border-[#141414] transition-colors ${isLowStock ? 'bg-red-100 hover:bg-red-200' : 'hover:bg-gray-50'}`}>
+                  <td className={`font-bold ${settings.compactTables ? 'p-3' : 'p-4'} ${isLowStock ? 'text-red-700' : ''}`}>{p.code}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'} ${isLowStock ? 'text-red-700' : ''}`}>{p.description}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>
                     <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs font-semibold">
                       {p.category}
                     </span>
                   </td>
-                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'}`}>{p.material}</td>
+                  <td className={`${settings.compactTables ? 'p-3' : 'p-4'} ${isLowStock ? 'text-red-700' : ''}`}>{p.material}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>
-                    <span className={getStock(p.id) < settings.lowStockThreshold ? 'text-red-600 font-bold' : ''}>
-                      {getStock(p.id)} {p.unit}
+                    <span className={isLowStock ? 'text-red-700 font-bold' : ''}>
+                      {stock} {p.unit}
                     </span>
+                    {isLowStock && (
+                      <div className="text-[10px] text-red-600 font-semibold mt-0.5">⚠ STOCK BAJO</div>
+                    )}
                   </td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-right`}>{formatMoney(p.cost, settings.currency)}</td>
                   <td className={`${settings.compactTables ? 'p-3' : 'p-4'} text-center`}>
@@ -95,7 +101,8 @@ export default function ProductsTable() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={7} className="p-12 text-center opacity-30 italic">

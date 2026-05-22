@@ -12,10 +12,10 @@ export type AppSettings = {
 };
 
 export const defaultSettings: AppSettings = {
-  companyName: 'MUEBLERÍA PIERO',
+  companyName: 'DISTRIBUCIONES DYNO',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
-  lowStockThreshold: 3,
+  lowStockThreshold: 70,
   compactTables: false,
   notifications: true,
   autoSave: true,

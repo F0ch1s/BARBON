@@ -1,49 +1,79 @@
 -- =============================================
--- MUEBLERÍA BARBÓN - Productos de ejemplo
+-- DISTRIBUCIONES DYNO - Reinsertar productos con stock
 -- Ejecutar en Supabase SQL Editor
 -- =============================================
 
--- PASO 1: Limpiar datos anteriores PRIMERO (antes de cambiar constraints)
-DELETE FROM movements; -- Borrar movimientos primero por la foreign key
+-- PASO 1: Limpiar datos existentes
+DELETE FROM movements;
 DELETE FROM products;
 
--- PASO 2: Renombrar columnas de width/color a category/material
-ALTER TABLE products RENAME COLUMN width TO category;
-ALTER TABLE products RENAME COLUMN color TO material;
-
--- PASO 3: Actualizar la restricción de unidad para los nuevos valores
+-- PASO 2: Actualizar la restricción de unidad
 ALTER TABLE products DROP CONSTRAINT IF EXISTS products_unit_check;
 ALTER TABLE products ADD CONSTRAINT products_unit_check
-  CHECK (unit IN ('Unidades', 'Juegos', 'Piezas'));
+  CHECK (unit IN ('Cajas', 'Yardas', 'Unidades'));
 
--- PASO 4: Insertar productos de mueblería
+-- PASO 3: Insertar productos del cliente
 INSERT INTO products (code, description, category, material, unit, cost) VALUES
-  -- Muebles de Dormitorio
-  ('MB-001', 'Cama King Size con cabecera tapizada', 'Dormitorio', 'Madera de pino', 'Unidades', 2800.00),
-  ('MB-002', 'Cama Queen Size clásica', 'Dormitorio', 'MDF enchapado', 'Unidades', 1950.00),
-  ('MB-003', 'Velador 2 cajones', 'Dormitorio', 'Melamina', 'Unidades', 280.00),
-  ('MB-004', 'Cómoda 6 cajones', 'Dormitorio', 'Madera de cedro', 'Unidades', 1200.00),
-  ('MB-005', 'Ropero 4 puertas con espejo', 'Dormitorio', 'MDF', 'Unidades', 2400.00),
-  ('MB-006', 'Tocador con espejo y banco', 'Dormitorio', 'Madera de pino', 'Juegos', 950.00),
+  ('DY-014', 'Cinta Dyn', '14 yardas', 'Estándar', 'Cajas', 150.00),
+  ('DY-016', 'Cinta Dyn', '16 yardas', 'Estándar', 'Cajas', 70.00),
+  ('DY-018', 'Cinta Dyn', '18 yardas', 'Estándar', 'Cajas', 80.00),
+  ('DY-036', 'Cinta Dyn', '36 yardas', 'Estándar', 'Cajas', 264.00),
+  ('DY-070', 'Cinta Dyn', '70 yardas', 'Estándar', 'Cajas', 220.00),
+  ('DY-080', 'Cinta Dyn', '80 yardas', 'Estándar', 'Cajas', 240.00),
+  ('DY-090', 'Cinta Dyn', '90 yardas', 'Estándar', 'Cajas', 260.00),
+  ('DY-100', 'Cinta Dyn', '100 yardas', 'Estándar', 'Cajas', 300.00),
+  ('DY-320', 'Cinta Dyn', '320 yardas', 'Estándar', 'Cajas', 240.00),
+  ('DY-340', 'Cinta Dyn', '340 yardas', 'Estándar', 'Cajas', 260.00),
+  ('DY-080-BLA', 'Cinta Dyn', '80 yardas', 'Blanco', 'Cajas', 240.00),
+  ('DY-080-NEG', 'Cinta Dyn', '80 yardas', 'Negro', 'Cajas', 240.00),
+  ('DY-080-VER', 'Cinta Dyn', '80 yardas', 'Verde', 'Cajas', 240.00),
+  ('DY-080-AMA', 'Cinta Dyn', '80 yardas', 'Amarillo', 'Cajas', 240.00),
+  ('DY-080-NAR', 'Cinta Dyn', '80 yardas', 'Anaranjado', 'Cajas', 240.00),
+  ('DY-080-AZU', 'Cinta Dyn', '80 yardas', 'Azul', 'Cajas', 240.00),
+  ('DY-080-ROJ', 'Cinta Dyn', '80 yardas', 'Rojo', 'Cajas', 240.00);
 
-  -- Muebles de Oficina
-  ('MB-007', 'Escritorio ejecutivo en L', 'Oficina', 'Melamina', 'Unidades', 1100.00),
-  ('MB-008', 'Silla ergonómica giratoria', 'Oficina', 'Metal y malla', 'Unidades', 650.00),
-  ('MB-009', 'Estante archivador 5 niveles', 'Oficina', 'Metal', 'Unidades', 420.00),
-  ('MB-010', 'Mesa de reuniones 8 personas', 'Oficina', 'MDF enchapado', 'Unidades', 1800.00),
-  ('MB-011', 'Librero modular 4 cuerpos', 'Oficina', 'Melamina', 'Unidades', 780.00),
+-- PASO 4: Insertar movimientos de STOCK INICIAL (entradas)
+INSERT INTO movements (product_id, type, quantity, cost, notes)
+SELECT id, 'IN', 253, 150.00, 'Stock inicial' FROM products WHERE code = 'DY-014'
+UNION ALL
+SELECT id, 'IN', 274, 70.00, 'Stock inicial' FROM products WHERE code = 'DY-016'
+UNION ALL
+SELECT id, 'IN', 254, 80.00, 'Stock inicial' FROM products WHERE code = 'DY-018'
+UNION ALL
+SELECT id, 'IN', 245, 264.00, 'Stock inicial' FROM products WHERE code = 'DY-036'
+UNION ALL
+SELECT id, 'IN', 235, 220.00, 'Stock inicial' FROM products WHERE code = 'DY-070'
+UNION ALL
+SELECT id, 'IN', 214, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080'
+UNION ALL
+SELECT id, 'IN', 245, 260.00, 'Stock inicial' FROM products WHERE code = 'DY-090'
+UNION ALL
+SELECT id, 'IN', 285, 300.00, 'Stock inicial' FROM products WHERE code = 'DY-100'
+UNION ALL
+SELECT id, 'IN', 257, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-320'
+UNION ALL
+SELECT id, 'IN', 296, 260.00, 'Stock inicial' FROM products WHERE code = 'DY-340'
+UNION ALL
+SELECT id, 'IN', 120, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-BLA'
+UNION ALL
+SELECT id, 'IN', 95, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-NEG'
+UNION ALL
+SELECT id, 'IN', 85, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-VER'
+UNION ALL
+SELECT id, 'IN', 93, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-AMA'
+UNION ALL
+SELECT id, 'IN', 97, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-NAR'
+UNION ALL
+SELECT id, 'IN', 102, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-AZU'
+UNION ALL
+SELECT id, 'IN', 118, 240.00, 'Stock inicial' FROM products WHERE code = 'DY-080-ROJ';
 
-  -- Muebles de Cocina
-  ('MB-012', 'Repostero alto 3 puertas', 'Cocina', 'Melamina', 'Unidades', 850.00),
-  ('MB-013', 'Repostero bajo con granito', 'Cocina', 'MDF y granito', 'Unidades', 1400.00),
-  ('MB-014', 'Mesa de cocina 4 personas', 'Cocina', 'Madera de pino', 'Unidades', 520.00),
-  ('MB-015', 'Alacena rústica 2 puertas', 'Cocina', 'Madera reciclada', 'Unidades', 680.00),
+-- PASO 5: Insertar ENTRADAS adicionales
+INSERT INTO movements (product_id, type, quantity, cost, notes)
+SELECT id, 'IN', 10, 80.00, 'Entrada adicional' FROM products WHERE code = 'DY-018';
 
-  -- Muebles de Sala
-  ('MB-016', 'Sofá seccional en L 5 asientos', 'Sala', 'Tela y madera', 'Unidades', 3200.00),
-  ('MB-017', 'Mesa de centro con vidrio', 'Sala', 'Vidrio y metal', 'Unidades', 450.00),
-  ('MB-018', 'Mueble para TV 55 pulgadas', 'Sala', 'Melamina', 'Unidades', 680.00),
-
-  -- Muebles de Comedor
-  ('MB-019', 'Juego de comedor 6 sillas', 'Comedor', 'Madera de cedro', 'Juegos', 2600.00),
-  ('MB-020', 'Vitrina aparador con vidrio', 'Comedor', 'MDF y vidrio', 'Unidades', 1350.00);
+-- PASO 6: Insertar SALIDAS
+INSERT INTO movements (product_id, type, quantity, cost, notes)
+SELECT id, 'OUT', 200, 80.00, 'Salida de mercadería' FROM products WHERE code = 'DY-018'
+UNION ALL
+SELECT id, 'OUT', 230, 260.00, 'Salida de mercadería' FROM products WHERE code = 'DY-340';
