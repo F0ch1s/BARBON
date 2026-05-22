@@ -1,12 +1,11 @@
-export type Unit = 'Unidades' | 'Juegos' | 'Piezas';
+export type Unit = 'Cajas' | 'Yardas' | 'Unidades';
 export type MovementType = 'IN' | 'OUT';
 
 export interface Product {
   id: string;
   code: string;
-  description: string;
-  category: string;
-  material: string;
+  name: string; // Producto in Excel
+  description: string; // Descripción in Excel
   unit: Unit;
   cost: number;
   initialStock?: number;

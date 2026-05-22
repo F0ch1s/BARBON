@@ -18,9 +18,8 @@ export default function EditProductModal({ isOpen, onClose, product }: EditProdu
     const updatedProduct: Product = {
       ...product,
       code: formData.get('code') as string,
+      name: formData.get('name') as string,
       description: formData.get('description') as string,
-      category: formData.get('category') as string,
-      material: formData.get('material') as string,
       unit: formData.get('unit') as Unit,
       cost: parseFloat(formData.get('cost') as string) || 0,
     };
@@ -31,8 +30,17 @@ export default function EditProductModal({ isOpen, onClose, product }: EditProdu
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Editar Mueble">
+    <Modal isOpen={isOpen} onClose={onClose} title="Editar Producto">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] uppercase font-bold opacity-70">Producto</label>
+          <input
+            name="name"
+            required
+            defaultValue={product.name}
+            className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
+          />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-[10px] uppercase font-bold opacity-70">Código de Producto</label>
@@ -44,39 +52,16 @@ export default function EditProductModal({ isOpen, onClose, product }: EditProdu
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] uppercase font-bold opacity-70">Material</label>
+            <label className="text-[10px] uppercase font-bold opacity-70">Descripción</label>
             <input
-              name="material"
+              name="description"
               required
-              defaultValue={product.material}
+              defaultValue={product.description}
               className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
             />
           </div>
         </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] uppercase font-bold opacity-70">Nombre del Mueble</label>
-          <input
-            name="description"
-            required
-            defaultValue={product.description}
-            className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
-          />
-        </div>
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] uppercase font-bold opacity-70">Categoría</label>
-            <select
-              name="category"
-              defaultValue={product.category}
-              className="border-b-2 border-[#141414] py-2 focus:outline-none bg-white"
-            >
-              <option value="Dormitorio">Dormitorio</option>
-              <option value="Oficina">Oficina</option>
-              <option value="Cocina">Cocina</option>
-              <option value="Sala">Sala</option>
-              <option value="Comedor">Comedor</option>
-            </select>
-          </div>
           <div className="flex flex-col gap-1">
             <label className="text-[10px] uppercase font-bold opacity-70">Unidad de Medida</label>
             <select
@@ -84,9 +69,9 @@ export default function EditProductModal({ isOpen, onClose, product }: EditProdu
               defaultValue={product.unit}
               className="border-b-2 border-[#141414] py-2 focus:outline-none bg-white"
             >
+              <option value="Cajas">Cajas</option>
+              <option value="Yardas">Yardas</option>
               <option value="Unidades">Unidades</option>
-              <option value="Juegos">Juegos</option>
-              <option value="Piezas">Piezas</option>
             </select>
           </div>
         </div>

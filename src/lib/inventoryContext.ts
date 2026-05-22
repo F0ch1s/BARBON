@@ -70,7 +70,7 @@ export function buildSystemPrompt(products: Product[], movements: Movement[]): s
     ? lowStock.map(p => `- ${p.code}: ${p.description} (Stock: ${calculateStock(p.id, movements)})`).join('\n')
     : 'Ninguno';
 
-  return `Eres el asistente de inventario de "${settings.companyName}", una mueblería.
+  return `Eres el asistente de inventario de "${settings.companyName}", una empresa distribuidora.
 
 REGLAS DE FORMATO ESTRICTAS:
 - Responde en español, de forma BREVE y DIRECTA. Máximo 8-12 líneas por respuesta.

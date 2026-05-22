@@ -7,7 +7,7 @@ import { streamChat } from '../lib/groqClient';
 import type { ChatMessage } from '../types';
 
 const SUGGESTED_QUESTIONS = [
-  '¿Qué mueble debería poner en oferta y por qué?',
+  '¿Qué producto debería poner en oferta y por qué?',
   '¿Cuánto capital tengo inmovilizado en baja rotación?',
   'Dame un análisis estratégico por categoría',
   '¿Qué productos necesito reabastecer pronto?',
@@ -205,7 +205,7 @@ export default function ChatBot() {
                     <Bot className="h-4 w-4" />
                   </div>
                   <div className="rounded-2xl rounded-tl-md bg-slate-100 px-4 py-3 text-sm text-slate-700 leading-relaxed">
-                    ¡Hola! 👋 Soy tu asistente de inventario. Puedo analizar tus datos y darte <strong>recomendaciones estratégicas</strong> para tu mueblería. ¿Qué te gustaría saber?
+                    ¡Hola! 👋 Soy tu asistente de inventario. Puedo analizar tus datos y darte <strong>recomendaciones estratégicas</strong> para tu empresa. ¿Qué te gustaría saber?
                   </div>
                 </div>
 

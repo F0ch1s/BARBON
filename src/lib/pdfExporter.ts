@@ -65,7 +65,7 @@ export function exportInventoryToPDF(products: Product[], movements: Movement[])
     },
   });
 
-  doc.save(`Muebleria_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`Reporte_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 export default exportInventoryToPDF;

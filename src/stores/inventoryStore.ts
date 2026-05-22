@@ -48,9 +48,9 @@ export async function addProduct(product: Product): Promise<boolean> {
       .from('products')
       .insert({
         code: product.code,
-        description: product.description,
-        category: product.width,
-        material: product.color,
+        description: product.name,
+        category: product.description,
+        material: null,
         unit: product.unit,
         cost: product.cost,
       })
@@ -107,9 +107,9 @@ export async function updateProduct(product: Product): Promise<boolean> {
       .from('products')
       .update({
         code: product.code,
-        description: product.description,
-        category: product.width,
-        material: product.color,
+        description: product.name,
+        category: product.description,
+        material: null,
         unit: product.unit,
         cost: product.cost,
       })
@@ -148,9 +148,9 @@ export async function importProducts(newProducts: Product[]): Promise<number> {
 
     const rows = unique.map(p => ({
       code: p.code,
-      description: p.description,
-      category: p.width,
-      material: p.color,
+      description: p.name,
+      category: p.description,
+      material: null,
       unit: p.unit,
       cost: p.cost,
     }));
@@ -222,6 +222,21 @@ export function getStock(productId: string): number {
     .reduce((acc, m) => (m.type === 'IN' ? acc + m.quantity : acc - m.quantity), 0);
 }
 
+export function getProductStats(productId: string) {
+  const movements = $movements.get().filter(m => m.productId === productId);
+  // Assume the oldest IN movement without specific 'entrada' notes or with 'Stock Inicial' is initial stock
+  // But to be exactly like the Excel, let's say the very first IN movement is initial stock
+  // and all subsequent IN movements are 'Entradas'
+  const inMovements = movements.filter(m => m.type === 'IN').sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  const initialStock = inMovements.length > 0 ? inMovements[0].quantity : 0;
+  const entradas = inMovements.slice(1).reduce((acc, m) => acc + m.quantity, 0);
+  const salidas = movements.filter(m => m.type === 'OUT').reduce((acc, m) => acc + m.quantity, 0);
+  const stock = initialStock + entradas - salidas;
+
+  return { initialStock, entradas, salidas, stock };
+}
+
 // --- Notification Actions ---
 export function addNotification(message: string, type: 'success' | 'error') {
   if (!$settings.get().notifications) return;
@@ -239,9 +254,8 @@ function mapDbToProduct(row: Record<string, unknown>): Product {
   return {
     id: row.id as string,
     code: row.code as string,
-    description: row.description as string,
-    width: (row.category as string) || '',
-    color: (row.material as string) || '',
+    name: row.description as string,
+    description: (row.category as string) || '',
     unit: (row.unit as string) || 'Cajas',
     cost: Number(row.cost),
   };

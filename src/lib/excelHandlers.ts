@@ -17,10 +17,9 @@ export function parseExcelFile(binaryString: string): Product[] {
       (item): Product => ({
         id: crypto.randomUUID(),
         code: String(item.Codigo || item.CODE || ''),
+        name: String(item.Producto || item.PRODUCTO || item.Nombre || ''),
         description: String(item.Descripcion || item.DESCRIPTION || ''),
-        category: String(item.Categoria || item.CATEGORY || ''),
-        material: String(item.Material || item.MATERIAL || ''),
-        unit: String(item.Unidad || item.UNIT || 'Unidades'),
+        unit: String(item.Unidad || item.UNIT || 'Cajas'),
         cost: parseFloat(String(item.Costo || item.COST)) || 0,
       })
     )
@@ -41,9 +40,8 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
     const stock = calculateStock(p.id, movements);
     return {
       Codigo: p.code,
+      Producto: p.name,
       Descripcion: p.description,
-      Categoria: p.category,
-      Material: p.material,
       Unidad: p.unit,
       CostoUnitario: p.cost,
       StockActual: stock,
@@ -60,6 +58,7 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
         Fecha: m.date,
         Tipo: m.type === 'IN' ? 'Entrada' : 'Salida',
         Codigo: product?.code ?? '',
+        Producto: product?.name ?? '',
         Descripcion: product?.description ?? '',
         Cantidad: m.quantity,
         CostoUnitario: m.cost,
@@ -72,6 +71,7 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
   const rotationRows = getProductSalesRanking(products, movements, 'desc', products.length).map((p, index) => ({
     Posicion: index + 1,
     Codigo: p.code,
+    Producto: p.name,
     Descripcion: p.description,
     Unidad: p.unit,
     Ventas: p.sales,
@@ -137,5 +137,5 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
   XLSX.utils.book_append_sheet(workbook, movementsSheet, 'Movimientos');
   XLSX.utils.book_append_sheet(workbook, rotationSheet, 'Rotacion');
 
-  XLSX.writeFile(workbook, `Reportes_Muebleria_${fileDate}.xlsx`);
+  XLSX.writeFile(workbook, `Reportes_Dyno_${fileDate}.xlsx`);
 }

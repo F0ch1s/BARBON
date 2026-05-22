@@ -112,7 +112,7 @@ export default function MovementModal({ isOpen, onClose }: MovementModalProps) {
           <input
             name="notes"
             className="border-b-2 border-[#141414] py-2 focus:outline-none focus:border-blue-600"
-            placeholder="Ej: Compra Proveedor Muebles / Venta Cliente"
+            placeholder="Ej: Compra Proveedor / Venta Cliente"
           />
         </div>
         <button
