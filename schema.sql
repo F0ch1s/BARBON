@@ -1,5 +1,5 @@
 -- =============================================
--- BARBÓN / DISTRIBUCIONES DYNO - Esquema de base de datos
+-- Esquema de base de datos
 -- Ejecutar PRIMERO en Supabase SQL Editor (antes de los seed_*.sql)
 -- =============================================
 
@@ -14,6 +14,8 @@ create table if not exists products (
   code        text not null unique,
   description text not null,
   category    text,
+  branch      text not null default 'O10'
+                check (branch in ('O10', 'G9', 'I7')),
   material    text,
   unit        text not null default 'Cajas'
                 check (unit in ('Cajas', 'Yardas', 'Unidades')),

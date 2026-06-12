@@ -1,5 +1,5 @@
 -- =============================================
--- MUEBLERÍA BARBÓN - Movimientos de ejemplo
+-- Movimientos de ejemplo
 -- Ejecutar en Supabase SQL Editor DESPUÉS del seed_products.sql
 -- =============================================
 

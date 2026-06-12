@@ -1,11 +1,15 @@
 export type Unit = 'Cajas' | 'Yardas' | 'Unidades';
 export type MovementType = 'IN' | 'OUT';
 
+export type Branch = 'O10' | 'G9' | 'I7';
+
 export interface Product {
   id: string;
   code: string;
   name: string; // Producto in Excel
   description: string; // Descripción in Excel
+  category: string;
+  branch: Branch;
   unit: Unit;
   cost: number;
   initialStock?: number;

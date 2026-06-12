@@ -41,6 +41,8 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
     return {
       Codigo: p.code,
       Producto: p.name,
+      Categoria: p.category || '-',
+      Sucursal: p.branch,
       Descripcion: p.description,
       Unidad: p.unit,
       CostoUnitario: p.cost,
@@ -137,5 +139,5 @@ export function exportInventoryToExcel(products: Product[], movements: Movement[
   XLSX.utils.book_append_sheet(workbook, movementsSheet, 'Movimientos');
   XLSX.utils.book_append_sheet(workbook, rotationSheet, 'Rotacion');
 
-  XLSX.writeFile(workbook, `Reportes_Dyno_${fileDate}.xlsx`);
+  XLSX.writeFile(workbook, `Reportes_${fileDate}.xlsx`);
 }

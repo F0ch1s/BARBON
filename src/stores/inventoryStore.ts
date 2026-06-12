@@ -48,8 +48,9 @@ export async function addProduct(product: Product): Promise<boolean> {
       .from('products')
       .insert({
         code: product.code,
-        description: product.name,
-        category: product.description,
+        description: product.description,
+        category: product.category || null,
+        branch: product.branch,
         material: null,
         unit: product.unit,
         cost: product.cost,
@@ -107,8 +108,9 @@ export async function updateProduct(product: Product): Promise<boolean> {
       .from('products')
       .update({
         code: product.code,
-        description: product.name,
-        category: product.description,
+        description: product.description,
+        category: product.category || null,
+        branch: product.branch,
         material: null,
         unit: product.unit,
         cost: product.cost,
@@ -148,8 +150,9 @@ export async function importProducts(newProducts: Product[]): Promise<number> {
 
     const rows = unique.map(p => ({
       code: p.code,
-      description: p.name,
-      category: p.description,
+      description: p.description,
+      category: p.category || null,
+      branch: p.branch,
       material: null,
       unit: p.unit,
       cost: p.cost,
@@ -254,8 +257,10 @@ function mapDbToProduct(row: Record<string, unknown>): Product {
   return {
     id: row.id as string,
     code: row.code as string,
-    name: row.description as string,
-    description: (row.category as string) || '',
+    name: (row.name as string) || (row.description as string) || '',
+    description: (row.description as string) || '',
+    category: (row.category as string) || '',
+    branch: (row.branch as string) || 'O10',
     unit: (row.unit as string) || 'Cajas',
     cost: Number(row.cost),
   };

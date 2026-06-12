@@ -14,7 +14,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         <div className="w-10 h-10 bg-[#141414] flex items-center justify-center">
           <Armchair className="text-white w-6 h-6" />
         </div>
-        <span className="hidden md:block font-bold text-xl tracking-tight italic font-serif">DynoKardex</span>
+        <span className="hidden md:block font-bold text-xl tracking-tight italic font-serif">Sistema de Inventario</span>
       </div>
 
       <div className="flex-1 py-6 flex flex-col gap-2">

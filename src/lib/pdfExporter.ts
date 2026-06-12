@@ -35,12 +35,12 @@ export function exportInventoryToPDF(products: Product[], movements: Movement[])
     doc.text(card.value, x + 16, summaryY + 38);
   });
 
-  const head = [['Código', 'Descripción', 'Unidad', 'Stock', 'Costo', 'Valor Total']];
+  const head = [['Código', 'Producto', 'Categoría', 'Sucursal', 'Unidad', 'Stock', 'Costo', 'Valor Total']];
 
   const body = products.map(p => {
     const stock = calculateStock(p.id, movements);
     const valor = stock * p.cost;
-    return [p.code || '', p.description || '', p.unit || '', String(stock), formatMoney(p.cost, settings.currency), formatMoney(valor, settings.currency)];
+    return [p.code || '', p.name || '', p.category || '-', p.branch || '', p.unit || '', String(stock), formatMoney(p.cost, settings.currency), formatMoney(valor, settings.currency)];
   });
 
   (doc as any).autoTable({

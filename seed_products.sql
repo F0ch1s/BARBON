@@ -1,5 +1,5 @@
 -- =============================================
--- DISTRIBUCIONES DYNO - Reinsertar productos con stock
+-- Reinsertar productos con stock
 -- Ejecutar en Supabase SQL Editor
 -- =============================================
 
@@ -13,24 +13,24 @@ ALTER TABLE products ADD CONSTRAINT products_unit_check
   CHECK (unit IN ('Cajas', 'Yardas', 'Unidades'));
 
 -- PASO 3: Insertar productos del cliente
-INSERT INTO products (code, description, category, material, unit, cost) VALUES
-  ('DY-014', 'Cinta Dyn', '14 yardas', 'Estándar', 'Cajas', 150.00),
-  ('DY-016', 'Cinta Dyn', '16 yardas', 'Estándar', 'Cajas', 70.00),
-  ('DY-018', 'Cinta Dyn', '18 yardas', 'Estándar', 'Cajas', 80.00),
-  ('DY-036', 'Cinta Dyn', '36 yardas', 'Estándar', 'Cajas', 264.00),
-  ('DY-070', 'Cinta Dyn', '70 yardas', 'Estándar', 'Cajas', 220.00),
-  ('DY-080', 'Cinta Dyn', '80 yardas', 'Estándar', 'Cajas', 240.00),
-  ('DY-090', 'Cinta Dyn', '90 yardas', 'Estándar', 'Cajas', 260.00),
-  ('DY-100', 'Cinta Dyn', '100 yardas', 'Estándar', 'Cajas', 300.00),
-  ('DY-320', 'Cinta Dyn', '320 yardas', 'Estándar', 'Cajas', 240.00),
-  ('DY-340', 'Cinta Dyn', '340 yardas', 'Estándar', 'Cajas', 260.00),
-  ('DY-080-BLA', 'Cinta Dyn', '80 yardas', 'Blanco', 'Cajas', 240.00),
-  ('DY-080-NEG', 'Cinta Dyn', '80 yardas', 'Negro', 'Cajas', 240.00),
-  ('DY-080-VER', 'Cinta Dyn', '80 yardas', 'Verde', 'Cajas', 240.00),
-  ('DY-080-AMA', 'Cinta Dyn', '80 yardas', 'Amarillo', 'Cajas', 240.00),
-  ('DY-080-NAR', 'Cinta Dyn', '80 yardas', 'Anaranjado', 'Cajas', 240.00),
-  ('DY-080-AZU', 'Cinta Dyn', '80 yardas', 'Azul', 'Cajas', 240.00),
-  ('DY-080-ROJ', 'Cinta Dyn', '80 yardas', 'Rojo', 'Cajas', 240.00);
+INSERT INTO products (code, description, category, branch, material, unit, cost) VALUES
+  ('DY-014', 'Cinta Dyn', '14 yardas', 'O10', 'Estándar', 'Cajas', 150.00),
+  ('DY-016', 'Cinta Dyn', '16 yardas', 'O10', 'Estándar', 'Cajas', 70.00),
+  ('DY-018', 'Cinta Dyn', '18 yardas', 'O10', 'Estándar', 'Cajas', 80.00),
+  ('DY-036', 'Cinta Dyn', '36 yardas', 'O10', 'Estándar', 'Cajas', 264.00),
+  ('DY-070', 'Cinta Dyn', '70 yardas', 'O10', 'Estándar', 'Cajas', 220.00),
+  ('DY-080', 'Cinta Dyn', '80 yardas', 'O10', 'Estándar', 'Cajas', 240.00),
+  ('DY-090', 'Cinta Dyn', '90 yardas', 'O10', 'Estándar', 'Cajas', 260.00),
+  ('DY-100', 'Cinta Dyn', '100 yardas', 'O10', 'Estándar', 'Cajas', 300.00),
+  ('DY-320', 'Cinta Dyn', '320 yardas', 'O10', 'Estándar', 'Cajas', 240.00),
+  ('DY-340', 'Cinta Dyn', '340 yardas', 'O10', 'Estándar', 'Cajas', 260.00),
+  ('DY-080-BLA', 'Cinta Dyn', '80 yardas', 'G9', 'Blanco', 'Cajas', 240.00),
+  ('DY-080-NEG', 'Cinta Dyn', '80 yardas', 'G9', 'Negro', 'Cajas', 240.00),
+  ('DY-080-VER', 'Cinta Dyn', '80 yardas', 'I7', 'Verde', 'Cajas', 240.00),
+  ('DY-080-AMA', 'Cinta Dyn', '80 yardas', 'I7', 'Amarillo', 'Cajas', 240.00),
+  ('DY-080-NAR', 'Cinta Dyn', '80 yardas', 'O10', 'Anaranjado', 'Cajas', 240.00),
+  ('DY-080-AZU', 'Cinta Dyn', '80 yardas', 'G9', 'Azul', 'Cajas', 240.00),
+  ('DY-080-ROJ', 'Cinta Dyn', '80 yardas', 'I7', 'Rojo', 'Cajas', 240.00);
 
 -- PASO 4: Insertar movimientos de STOCK INICIAL (entradas)
 INSERT INTO movements (product_id, type, quantity, cost, notes)

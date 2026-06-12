@@ -12,7 +12,7 @@ export type AppSettings = {
 };
 
 export const defaultSettings: AppSettings = {
-  companyName: 'DISTRIBUCIONES DYNO',
+  companyName: 'Mi Empresa',
   currency: 'PEN',
   defaultReportFormat: 'pdf',
   lowStockThreshold: 70,
