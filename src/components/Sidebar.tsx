@@ -1,5 +1,8 @@
-import { Armchair, LayoutDashboard, Layers, History, BarChart3, Settings } from 'lucide-react';
+import { Armchair, LayoutDashboard, Layers, History, BarChart3, Settings, Mail } from 'lucide-react';
+import { useStore } from '@nanostores/react';
 import NavItem from './ui/NavItem';
+import LogoutButton from './LogoutButton';
+import { $currentUser } from '../stores/authStore';
 import type { TabType } from '../types';
 
 interface SidebarProps {
@@ -8,6 +11,8 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+  const currentUser = useStore($currentUser);
+
   return (
     <nav className="fixed left-0 top-0 h-full w-20 md:w-64 bg-white border-r border-[#141414] flex flex-col z-40">
       <div className="p-6 border-b border-[#141414] flex items-center gap-3">
@@ -44,13 +49,27 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         />
       </div>
 
-      <div className="p-6 border-t border-[#141414]">
+      <div className="p-6 border-t border-[#141414] flex flex-col gap-4">
+        {currentUser && (
+          <div className="hidden md:block text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <div className="font-semibold text-[#141414] truncate mb-1">
+              {currentUser.username || 'Usuario'}
+            </div>
+            <div className="flex items-start gap-1 text-slate-600 min-w-0">
+              <Mail size={12} className="flex-shrink-0 mt-0.5" />
+              <span className="truncate text-xs">{currentUser.email}</span>
+            </div>
+          </div>
+        )}
+
         <NavItem
           active={activeTab === 'settings'}
           onClick={() => onTabChange('settings')}
           icon={<Settings size={20} />}
           label="Configuración"
         />
+
+        <LogoutButton />
       </div>
     </nav>
   );

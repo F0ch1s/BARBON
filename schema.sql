@@ -40,8 +40,9 @@ create index if not exists idx_movements_product_id on movements(product_id);
 
 -- ---------------------------------------------
 -- Row Level Security (RLS)
--- La app se conecta con la ANON KEY y no usa login,
--- así que permitimos acceso completo al rol anónimo.
+-- NOTA: Ahora la app requiere autenticación (login)
+-- Por defecto, permitimos acceso completo al rol anónimo.
+-- Para restringir a solo usuarios autenticados, descomentar las políticas alternativas.
 -- ---------------------------------------------
 alter table products  enable row level security;
 alter table movements enable row level security;
@@ -55,3 +56,14 @@ create policy "Acceso anon a movements"
   on movements for all
   to anon
   using (true) with check (true);
+
+-- ALTERNATIVA: Políticas restrictivas (solo usuarios autenticados)
+-- Descomenta estas líneas si quieres restringir a solo usuarios autenticados
+-- drop policy if exists "Acceso anon a products" on products;
+-- drop policy if exists "Acceso anon a movements" on movements;
+-- 
+-- create policy "Usuario autenticado productos"
+--   on products for all using (auth.uid() is not null) with check (auth.uid() is not null);
+-- 
+-- create policy "Usuario autenticado movimientos"
+--   on movements for all using (auth.uid() is not null) with check (auth.uid() is not null);
